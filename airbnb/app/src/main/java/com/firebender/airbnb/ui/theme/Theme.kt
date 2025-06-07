@@ -1,6 +1,5 @@
 package com.firebender.airbnb.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -12,32 +11,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = AirbnbPrimary,
+    background = AirbnbNeutral100,
+    surface = AirbnbNeutral100,
+    onPrimary = AirbnbNeutral10,
+    onBackground = AirbnbNeutral10,
+    onSurface = AirbnbNeutral10
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = AirbnbPrimary,
+    background = AirbnbNeutral10,
+    surface = AirbnbNeutral10,
+    onPrimary = AirbnbNeutral10,
+    onBackground = AirbnbNeutral100,
+    onSurface = AirbnbNeutral100,
+    outline = AirbnbNeutral40
 )
 
 @Composable
 fun AirbnbTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // Disable dynamic colors to use Airbnb branding
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
