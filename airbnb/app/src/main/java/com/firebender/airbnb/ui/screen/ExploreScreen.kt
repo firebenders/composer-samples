@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,15 +14,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,14 +31,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.firebender.airbnb.R
 import com.firebender.airbnb.ui.theme.AirbnbNeutral10
 import com.firebender.airbnb.ui.theme.AirbnbNeutral100
-import com.firebender.airbnb.ui.theme.AirbnbNeutral20
-import com.firebender.airbnb.ui.theme.AirbnbNeutral40
 import com.firebender.airbnb.ui.theme.AirbnbNeutral70
 import com.firebender.airbnb.ui.theme.AirbnbPrimary
 import com.firebender.airbnb.ui.theme.AirbnbTheme
@@ -59,9 +55,7 @@ fun ExploreScreen() {
         ) {
             Spacer(modifier = Modifier.height(10.dp))
             SearchBar()
-            Spacer(modifier = Modifier.height(17.dp))
-            CategoriesSection()
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             PropertyCards()
         }
 
@@ -85,10 +79,13 @@ fun SearchBar() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .shadow(8.dp, RoundedCornerShape(43.dp), ambientColor = Color.Black.copy(alpha = 0.1f)),
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(43.dp),
+                ambientColor = Color.Black.copy(alpha = 0.12f)
+            ),
         shape = RoundedCornerShape(43.dp),
-        colors = CardDefaults.cardColors(containerColor = AirbnbNeutral10),
-        border = androidx.compose.foundation.BorderStroke(0.5.dp, AirbnbNeutral40)
+        colors = CardDefaults.cardColors(containerColor = AirbnbNeutral10)
     ) {
         Row(
             modifier = Modifier
@@ -99,109 +96,56 @@ fun SearchBar() {
         ) {
             Row(
                 modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.icon_outline_search),
+                    painter = painterResource(id = R.drawable.icon_outline_search_0),
                     contentDescription = "Search",
                     modifier = Modifier.size(24.dp),
                     tint = AirbnbNeutral100
                 )
-                Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
-                        text = "Where to?",
+                        text = "Manhattan",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = AirbnbNeutral100
                     )
                     Text(
-                        text = "Anywhere • Any week • Add guests",
+                        text = "Feb 13 - 14, 2023 (±1) ∙ 1 guest",
                         fontSize = 12.sp,
                         color = AirbnbNeutral70
                     )
                 }
             }
 
-            Card(
-                shape = CircleShape,
-                colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                border = androidx.compose.foundation.BorderStroke(0.5.dp, AirbnbNeutral40)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_outline_filter),
-                    contentDescription = "Filter",
+            // Filter button with indicator
+            Box {
+                Card(
+                    shape = CircleShape,
+                    colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+                    border = androidx.compose.foundation.BorderStroke(2.dp, AirbnbNeutral100)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_outline_filter_0),
+                        contentDescription = "Filter",
+                        modifier = Modifier
+                            .size(44.dp)
+                            .padding(10.dp),
+                        tint = AirbnbNeutral100
+                    )
+                }
+                // Red indicator dot
+                Box(
                     modifier = Modifier
-                        .size(40.dp)
-                        .padding(10.dp),
-                    tint = AirbnbNeutral100
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(AirbnbPrimary)
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-2).dp, y = 2.dp)
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun CategoriesSection() {
-    val categories = listOf(
-        CategoryItem("OMG!", R.drawable.icon_outline_u_f_o, true),
-        CategoryItem("Beach", R.drawable.icon_outline_beach, false),
-        CategoryItem("Amazing pools", R.drawable.icon_outline_pool, false),
-        CategoryItem("Islands", R.drawable.icon_outline_island, false),
-        CategoryItem("Arctic", R.drawable.icon_outline_arctic, false)
-    )
-
-    Column {
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(18.dp),
-            contentPadding = PaddingValues(horizontal = 24.dp)
-        ) {
-            itemsIndexed(categories) { _, category ->
-                CategoryTab(category = category)
-            }
-        }
-
-        // Bottom border
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            thickness = 1.dp,
-            color = AirbnbNeutral20
-        )
-    }
-}
-
-@Composable
-fun CategoryTab(category: CategoryItem) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(vertical = 8.dp)
-    ) {
-        Icon(
-            painter = painterResource(id = category.iconRes),
-            contentDescription = category.title,
-            modifier = Modifier.size(24.dp),
-            tint = if (category.isActive) AirbnbNeutral100 else AirbnbNeutral70
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = category.title,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            color = if (category.isActive) AirbnbNeutral100 else AirbnbNeutral70
-        )
-
-        // Active indicator line
-        if (category.isActive) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .width(40.dp)
-                    .height(2.dp)
-                    .background(AirbnbNeutral100)
-            )
         }
     }
 }
@@ -213,21 +157,25 @@ fun PropertyCards() {
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
         PropertyCard(
-            imageRes = R.drawable.poolside_garden_patio,
-            title = "Abiansemal, Indonesia",
-            distance = "1,669 kilometers",
-            date = "Jul 2 - 7",
-            rating = "4.87 (71)",
-            price = "$360 night"
+            imageRes = R.drawable.cozy_bedroom_interior,
+            title = "Private room in Yonkers",
+            description = "Private room in Yonkers close to bus/train station",
+            bedSize = "1 Queen Bed",
+            date = "Feb 13 - 14",
+            rating = "5.0 (3)",
+            price = "$38",
+            totalPrice = "$48 total"
         )
 
         PropertyCard(
-            imageRes = R.drawable.modern_house_pool_view,
-            title = "Kintamani, Indonesia",
-            distance = "971 kilometers",
-            date = "Jul 6 - 11",
-            rating = "4.91 (89)",
-            price = "$360 night"
+            imageRes = R.drawable.modern_bedroom_interior,
+            title = "Condo in Los Angeles",
+            description = "Your Stylish Home Away From Home In Downtown LA!",
+            bedSize = "1 Standard Bed",
+            date = "Feb 19 - 20",
+            rating = "4.93 (42)",
+            price = "$360",
+            totalPrice = "$720 total"
         )
     }
 }
@@ -236,10 +184,12 @@ fun PropertyCards() {
 fun PropertyCard(
     imageRes: Int,
     title: String,
-    distance: String,
+    description: String,
+    bedSize: String,
     date: String,
     rating: String,
-    price: String
+    price: String,
+    totalPrice: String
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -261,22 +211,15 @@ fun PropertyCard(
             )
 
             // Heart icon
-            Card(
+            Icon(
+                painter = painterResource(id = R.drawable.icon_outline_heart_0),
+                contentDescription = "Favorite",
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(12.dp),
-                shape = CircleShape,
-                colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_outline_heart),
-                    contentDescription = "Favorite",
-                    modifier = Modifier
-                        .size(28.dp)
-                        .padding(4.dp),
-                    tint = AirbnbNeutral10
-                )
-            }
+                    .padding(12.dp)
+                    .size(24.dp),
+                tint = AirbnbNeutral10
+            )
 
             // Progress indicators
             Row(
@@ -301,42 +244,61 @@ fun PropertyCard(
         // Property information
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Top
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
-                    color = AirbnbNeutral100
+                    color = AirbnbNeutral100,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = distance,
+                    text = description,
+                    fontSize = 14.sp,
+                    color = AirbnbNeutral70,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = bedSize,
                     fontSize = 14.sp,
                     color = AirbnbNeutral70
                 )
-                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = date,
                     fontSize = 14.sp,
                     color = AirbnbNeutral70
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = price,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = AirbnbNeutral100
-                )
+                Row(
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Text(
+                        text = "$price night",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = AirbnbNeutral100,
+                        textDecoration = TextDecoration.Underline
+                    )
+                    Text(
+                        text = " ∙ $totalPrice",
+                        fontSize = 16.sp,
+                        color = AirbnbNeutral70
+                    )
+                }
             }
 
             // Rating
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 8.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.icon_filled_star),
+                    painter = painterResource(id = R.drawable.icon_filled_star_0),
                     contentDescription = "Rating",
                     modifier = Modifier.size(12.dp),
                     tint = AirbnbNeutral100
@@ -356,12 +318,12 @@ fun PropertyCard(
 fun MapButton(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
-            .shadow(8.dp, CircleShape),
-        shape = CircleShape,
+            .shadow(8.dp, RoundedCornerShape(40.dp)),
+        shape = RoundedCornerShape(40.dp),
         colors = CardDefaults.cardColors(containerColor = AirbnbNeutral100)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -371,7 +333,7 @@ fun MapButton(modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.Medium,
                 color = AirbnbNeutral10
             )
-            // Two vertical lines icon to match Figma
+            // Map icon - using simple bars to match Figma
             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 Box(
                     modifier = Modifier
@@ -397,8 +359,8 @@ fun BottomNavigation(modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp),
         colors = CardDefaults.cardColors(containerColor = AirbnbNeutral10),
         border = androidx.compose.foundation.BorderStroke(
-            width = 0.5.dp,
-            color = AirbnbNeutral40
+            width = 1.dp,
+            color = Color(0xFFD8DCE0)
         )
     ) {
         Row(
@@ -408,28 +370,28 @@ fun BottomNavigation(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             BottomNavItem(
-                iconRes = R.drawable.icon_outline_search,
+                iconRes = R.drawable.icon_outline_search_0,
                 label = "Explore",
                 isActive = true
             )
             BottomNavItem(
-                iconRes = R.drawable.icon_outline_heart,
+                iconRes = R.drawable.icon_outline_heart_0,
                 label = "Wishlist",
-                isActive = false
-            )
-            BottomNavItem(
-                iconRes = R.drawable.icon_airbnb,
-                label = "Trips",
-                isActive = false
-            )
-            BottomNavItem(
-                iconRes = R.drawable.icon_outline_message,
-                label = "Inbox",
                 isActive = false,
                 hasIndicator = true
             )
             BottomNavItem(
-                iconRes = R.drawable.icon_outline_user,
+                iconRes = R.drawable.airbnb,
+                label = "Trips",
+                isActive = false
+            )
+            BottomNavItem(
+                iconRes = R.drawable.icon_outline_message_0,
+                label = "Inbox",
+                isActive = false
+            )
+            BottomNavItem(
+                iconRes = R.drawable.icon_outline_user_0,
                 label = "Profile",
                 isActive = false
             )
@@ -476,12 +438,6 @@ fun BottomNavItem(
         )
     }
 }
-
-data class CategoryItem(
-    val title: String,
-    val iconRes: Int,
-    val isActive: Boolean
-)
 
 @Preview(showBackground = true)
 @Composable

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChatHistoryState">
+    <option name="serializedSessions">
+      <map>
+        <entry key="5f491a9a-4a3c-43f1-bc71-869f90a5bbb7" value="{&quot;id&quot;:&quot;5f491a9a-4a3c-43f1-bc71-869f90a5bbb7&quot;,&quot;name&quot;:&quot;Figma Composer Sample for ChatGPT&quot;,&quot;timestamp&quot;:1749321675878,&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:[{&quot;type&quot;:&quot;text&quot;,&quot;text&quot;:&quot;\u003cuser_query\u003e\nhttps://www.figma.com/design/1EOqH7uamh1fsFr3QIKxSR/Composer-Sample--ChatGPT?node-id\u003d13-801\u0026t\u003dhpjekNvCr2sYOywF-4\n\u003c/user_query\u003e&quot;}]}]}" />
+      </map>
+    </option>
+  </component>
+</project>
