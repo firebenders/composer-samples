@@ -588,7 +588,9 @@ fun SearchOverlayMatchingFigma(
     onDismiss: () -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .background(Neutral10)
     ) {
         // Status Bar
         Spacer(modifier = Modifier.height(44.dp))
@@ -596,11 +598,11 @@ fun SearchOverlayMatchingFigma(
         // Top Bar with close button and tabs
         TopBarWithCloseButton(onCloseClick = onDismiss)
 
-        // Where field (showing "Amalfi Coast, Italy")
-        WhereField()
+        // Search Fields Container
+        SearchFieldsContainer()
 
-        // Main date selection content
-        DateSelectionContent()
+        // Who's coming section
+        WhosComingSection()
     }
 }
 
@@ -609,18 +611,10 @@ fun TopBarWithCloseButton(onCloseClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 8.dp),
+            .padding(horizontal = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Tabs
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            TabItem(text = "Stays", isActive = true)
-            TabItem(text = "Experiences", isActive = false)
-        }
-
         // Close button
         Button(
             onClick = onCloseClick,
@@ -639,6 +633,14 @@ fun TopBarWithCloseButton(onCloseClick: () -> Unit) {
                 modifier = Modifier.size(24.dp),
                 tint = Neutral100
             )
+        }
+
+        // Tabs
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            TabItem(text = "Stays", isActive = true)
+            TabItem(text = "Experiences", isActive = false)
         }
     }
 }
@@ -677,262 +679,246 @@ fun TabItem(text: String, isActive: Boolean) {
 }
 
 @Composable
-fun WhereField() {
-    Row(
+fun SearchFieldsContainer() {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 14.dp)
-            .background(Neutral10, RoundedCornerShape(18.dp))
-            .border(1.dp, Neutral40, RoundedCornerShape(18.dp))
-            .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(18.dp),
-                spotColor = Color.Black.copy(alpha = 0.08f)
-            )
-            .padding(24.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 24.dp, vertical = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column {
-            Text(
-                text = "When",
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-                color = Neutral70
-            )
-            Text(
-                text = "Any week",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-                color = Neutral100
-            )
+        // Where field
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Neutral10, RoundedCornerShape(16.dp))
+                .border(1.dp, Neutral40, RoundedCornerShape(16.dp))
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(16.dp),
+                    spotColor = Color.Black.copy(alpha = 0.08f)
+                )
+                .padding(24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = "Where",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    color = Neutral70
+                )
+                Text(
+                    text = "Amalfi Coast, Italy",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    color = Neutral100
+                )
+            }
+        }
+
+        // When field
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Neutral10, RoundedCornerShape(16.dp))
+                .border(1.dp, Neutral40, RoundedCornerShape(16.dp))
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(16.dp),
+                    spotColor = Color.Black.copy(alpha = 0.08f)
+                )
+                .padding(24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = "When",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    color = Neutral70
+                )
+                Text(
+                    text = "Jul 5 - Dec 5",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    color = Neutral100
+                )
+            }
         }
     }
 }
 
 @Composable
-fun DateSelectionContent() {
+fun WhosComingSection() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Neutral10, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+            .border(1.dp, Neutral40, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             .shadow(
                 elevation = 18.dp,
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
                 spotColor = Color.Black.copy(alpha = 0.24f)
             )
     ) {
-        // Content
         Column(
-            modifier = Modifier.padding(24.dp)
+            modifier = Modifier
+                .weight(1f)
+                .padding(24.dp)
         ) {
             // Title
             Text(
-                text = "When's your trip?",
+                text = "Who's coming?",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Medium,
                     fontSize = 26.sp
                 ),
                 color = Neutral100,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // Tab selector
-            DateTabSelector()
+            // Guest counters
+            GuestCounterItem(
+                title = "Adults",
+                subtitle = "Ages 13 or above",
+                count = 0
+            )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            GuestCounterItem(
+                title = "Children",
+                subtitle = "Ages 2-12",
+                count = 0
+            )
 
-            // Stay for a week section
-            StayForAWeekSection()
+            GuestCounterItem(
+                title = "Infants",
+                subtitle = "Under 2",
+                count = 0
+            )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            GuestCounterItem(
+                title = "Pets",
+                subtitle = "Bringing a service animal?",
+                count = 0
+            )
 
-            // Go anytime section
-            GoAnytimeSection()
-
-            Spacer(modifier = Modifier.weight(1f))
         }
 
         // Bottom buttons
-        BottomButtonsSection(
-            onSkip = { /* Handle skip */ },
-            onNext = { /* Handle next */ }
-        )
+        SearchBottomButtons()
     }
 }
 
 @Composable
-fun DateTabSelector() {
-    val tabs = listOf("Dates", "Months", "Flexible")
-    var selectedTab by remember { mutableStateOf("Months") }
+fun GuestCounterItem(
+    title: String,
+    subtitle: String,
+    count: Int
+) {
+    var currentCount by remember { mutableStateOf(count) }
 
     Row(
         modifier = Modifier
-            .background(Neutral20, RoundedCornerShape(24.dp))
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        tabs.forEach { tab ->
-            val isSelected = selectedTab == tab
-            Button(
-                onClick = { selectedTab = tab },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSelected) Neutral10 else Color.Transparent,
-                    contentColor = Neutral100
-                ),
-                shape = RoundedCornerShape(20.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                modifier = Modifier.height(36.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = if (isSelected) 2.dp else 0.dp
-                )
-            ) {
-                Text(
-                    text = tab,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun StayForAWeekSection() {
-    var selectedOption by remember { mutableStateOf("Week") }
-    val options = listOf("Weekend", "Week", "Month")
-
-    Column {
-        Text(
-            text = "Stay for a week",
-            style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Medium,
-                fontSize = 20.sp
-            ),
-            color = Neutral100,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            options.forEach { option ->
-                val isSelected = selectedOption == option
-                Button(
-                    onClick = { selectedOption = option },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = Neutral100
-                    ),
-                    shape = RoundedCornerShape(24.dp),
-                    border = BorderStroke(
-                        width = if (isSelected) 2.dp else 1.dp,
-                        color = if (isSelected) Neutral100 else Neutral40
-                    ),
-                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
-                    modifier = Modifier.height(48.dp)
-                ) {
-                    Text(
-                        text = option,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 16.sp,
-                            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
-                        )
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun GoAnytimeSection() {
-    Column {
-        Text(
-            text = "Go anytime",
-            style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Medium,
-                fontSize = 20.sp
-            ),
-            color = Neutral100,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            MonthCard("June", "2023", false, Modifier.weight(1f))
-            MonthCard("July", "2023", true, Modifier.weight(1f))
-            MonthCard("Aug", "2023", false, Modifier.weight(1f))
-        }
-    }
-}
-
-@Composable
-fun MonthCard(
-    month: String,
-    year: String,
-    isSelected: Boolean = false,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = { /* Handle month selection */ },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            contentColor = Neutral100
-        ),
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(
-            width = if (isSelected) 2.dp else 1.dp,
-            color = if (isSelected) Neutral100 else Neutral40
-        ),
-        contentPadding = PaddingValues(16.dp),
-        modifier = modifier.height(120.dp)
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.weight(1f)
         ) {
-            Icon(
-                painter = painterResource(R.drawable.calendar_icon_1),
-                contentDescription = "Calendar",
-                modifier = Modifier.size(24.dp),
-                tint = if (isSelected) Neutral100 else Neutral70
-            )
-
             Text(
-                text = month,
+                text = title,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = 16.sp,
-                    fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
+                    fontWeight = FontWeight.Medium
                 ),
                 color = Neutral100
             )
-
             Text(
-                text = year,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontSize = 12.sp
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 14.sp,
+                    textDecoration = if (title == "Pets") TextDecoration.Underline else TextDecoration.None
                 ),
                 color = Neutral70
             )
         }
+
+        // Counter controls
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Minus button
+            Button(
+                onClick = { if (currentCount > 0) currentCount-- },
+                modifier = Modifier.size(32.dp),
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Neutral10,
+                    contentColor = if (currentCount > 0) Neutral100 else Neutral40,
+                    disabledContainerColor = Neutral10,
+                    disabledContentColor = Neutral40
+                ),
+                border = BorderStroke(1.dp, if (currentCount > 0) Neutral100 else Neutral40),
+                contentPadding = PaddingValues(0.dp),
+                enabled = currentCount > 0
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.minus_icon),
+                    contentDescription = "Decrease",
+                    modifier = Modifier.size(16.dp),
+                    tint = if (currentCount > 0) Neutral100 else Neutral40
+                )
+            }
+
+            // Count display
+            Text(
+                text = currentCount.toString(),
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = 16.sp
+                ),
+                color = Neutral100,
+                modifier = Modifier.width(24.dp),
+                textAlign = TextAlign.Center
+            )
+
+            // Plus button
+            Button(
+                onClick = { currentCount++ },
+                modifier = Modifier.size(32.dp),
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Neutral10,
+                    contentColor = Neutral100
+                ),
+                border = BorderStroke(1.dp, Neutral100),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.plus_icon),
+                    contentDescription = "Increase",
+                    modifier = Modifier.size(16.dp),
+                    tint = Neutral100
+                )
+            }
+        }
     }
 }
 
 @Composable
-fun BottomButtonsSection(
-    onSkip: () -> Unit,
-    onNext: () -> Unit
-) {
+fun SearchBottomButtons() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -942,16 +928,17 @@ fun BottomButtonsSection(
                 color = Neutral40,
                 shape = RectangleShape
             )
-            .padding(horizontal = 24.dp, vertical = 16.dp),
+            .padding(horizontal = 24.dp, vertical = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Clear all button
         TextButton(
-            onClick = onSkip,
+            onClick = { /* Handle clear all */ },
             contentPadding = PaddingValues(0.dp)
         ) {
             Text(
-                text = "Skip",
+                text = "Clear all",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -961,24 +948,36 @@ fun BottomButtonsSection(
             )
         }
 
+        // Search button
         Button(
-            onClick = onNext,
+            onClick = { /* Handle search */ },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Neutral100,
+                containerColor = Primary70,
                 contentColor = Neutral10
             ),
-            shape = RoundedCornerShape(8.dp),
-            contentPadding = PaddingValues(horizontal = 48.dp, vertical = 14.dp),
+            shape = RoundedCornerShape(6.dp),
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
             modifier = Modifier.height(48.dp)
         ) {
-            Text(
-                text = "Next",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-                color = Neutral10
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.search_outline_icon),
+                    contentDescription = "Search",
+                    modifier = Modifier.size(20.dp),
+                    tint = Neutral10
+                )
+                Text(
+                    text = "Search",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    color = Neutral10
+                )
+            }
         }
     }
 }
@@ -988,5 +987,15 @@ fun BottomButtonsSection(
 fun ExploreScreenPreview() {
     AirbnbTheme {
         ExploreScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchOverlayPreview() {
+    AirbnbTheme {
+        SearchOverlayMatchingFigma(
+            onDismiss = { }
+        )
     }
 }
