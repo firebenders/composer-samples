@@ -609,7 +609,7 @@ fun TopBarWithCloseButton(onCloseClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 24.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -634,7 +634,7 @@ fun TopBarWithCloseButton(onCloseClick: () -> Unit) {
             contentPadding = PaddingValues(8.dp)
         ) {
             Icon(
-                painter = painterResource(R.drawable.close_icon_0),
+                painter = painterResource(R.drawable.close_outline_icon),
                 contentDescription = "Close",
                 modifier = Modifier.size(24.dp),
                 tint = Neutral100
@@ -695,7 +695,7 @@ fun WhereField() {
     ) {
         Column {
             Text(
-                text = "Where",
+                text = "When",
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
@@ -703,7 +703,7 @@ fun WhereField() {
                 color = Neutral70
             )
             Text(
-                text = "Amalfi Coast, Italy",
+                text = "Any week",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
@@ -716,8 +716,6 @@ fun WhereField() {
 
 @Composable
 fun DateSelectionContent() {
-    var selectedTab by remember { mutableStateOf("Months") }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -744,44 +742,19 @@ fun DateSelectionContent() {
             )
 
             // Tab selector
-            DateTabSelector(
-                selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it }
-            )
+            DateTabSelector()
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // Circular month picker - matches Figma design
-            CircularMonthPicker()
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Text and calendar link
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Starting July 1 • ",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 14.sp
-                    ),
-                    color = Neutral70
-                )
-
-                Text(
-                    text = "Edit",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    color = Neutral100
-                )
-            }
+            // Stay for a week section
+            StayForAWeekSection()
 
             Spacer(modifier = Modifier.height(32.dp))
+
+            // Go anytime section
+            GoAnytimeSection()
+
+            Spacer(modifier = Modifier.weight(1f))
         }
 
         // Bottom buttons
@@ -793,22 +766,20 @@ fun DateSelectionContent() {
 }
 
 @Composable
-fun DateTabSelector(
-    selectedTab: String,
-    onTabSelected: (String) -> Unit
-) {
+fun DateTabSelector() {
     val tabs = listOf("Dates", "Months", "Flexible")
+    var selectedTab by remember { mutableStateOf("Months") }
 
     Row(
         modifier = Modifier
             .background(Neutral20, RoundedCornerShape(24.dp))
             .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(23.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         tabs.forEach { tab ->
             val isSelected = selectedTab == tab
             Button(
-                onClick = { onTabSelected(tab) },
+                onClick = { selectedTab = tab },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (isSelected) Neutral10 else Color.Transparent,
                     contentColor = Neutral100
@@ -833,150 +804,127 @@ fun DateTabSelector(
 }
 
 @Composable
-fun CircularMonthPicker() {
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        // Main circular background with shadow
-        Box(
-            modifier = Modifier
-                .size(200.dp)
-                .shadow(
-                    elevation = 28.dp,
-                    shape = CircleShape,
-                    spotColor = Color.Black.copy(alpha = 0.12f)
-                )
-                .background(Neutral10, CircleShape),
-            contentAlignment = Alignment.Center
+fun StayForAWeekSection() {
+    var selectedOption by remember { mutableStateOf("Week") }
+    val options = listOf("Weekend", "Week", "Month")
+
+    Column {
+        Text(
+            text = "Stay for a week",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Medium,
+                fontSize = 20.sp
+            ),
+            color = Neutral100,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Background circle
-            Box(
-                modifier = Modifier
-                    .size(180.dp)
-                    .background(Color(0xFFF5F5F5), CircleShape)
-            )
-
-            // Gradient arc - partial arc
-            Canvas(
-                modifier = Modifier.size(180.dp)
-            ) {
-                val strokeWidth = 16.dp.toPx()
-                val radius = (size.minDimension - strokeWidth) / 2
-                val center = Offset(size.width / 2, size.height / 2)
-
-                // Draw gradient arc from approximately 0 degrees to 150 degrees
-                drawArc(
-                    brush = Brush.sweepGradient(
-                        colors = listOf(
-                            Color(0xFFFF385C), // Airbnb red
-                            Color(0xFFE91E63), // Magenta
-                            Color(0xFFFF385C) // Back to red
-                        ),
-                        center = center
+            options.forEach { option ->
+                val isSelected = selectedOption == option
+                Button(
+                    onClick = { selectedOption = option },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Neutral100
                     ),
-                    startAngle = 0f,
-                    sweepAngle = 150f,
-                    useCenter = false,
-                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
-                    topLeft = Offset(strokeWidth / 2, strokeWidth / 2),
-                    size = Size(size.width - strokeWidth, size.height - strokeWidth)
-                )
-
-                // Draw white circle at the end of the arc
-                val endAngle = 0f + 150f
-                val endRadians = Math.toRadians(endAngle.toDouble())
-                val arcRadius = (size.minDimension - strokeWidth) / 2
-                val endX = center.x + (arcRadius * kotlin.math.cos(endRadians)).toFloat()
-                val endY = center.y + (arcRadius * kotlin.math.sin(endRadians)).toFloat()
-
-                drawCircle(
-                    color = Color.White,
-                    radius = strokeWidth / 2,
-                    center = Offset(endX, endY)
-                )
-            }
-
-            // Center content
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "3",
-                    style = MaterialTheme.typography.headlineLarge.copy(
-                        fontSize = 48.sp,
-                        fontWeight = FontWeight.Bold
+                    shape = RoundedCornerShape(24.dp),
+                    border = BorderStroke(
+                        width = if (isSelected) 2.dp else 1.dp,
+                        color = if (isSelected) Neutral100 else Neutral40
                     ),
-                    color = Neutral100
-                )
-                Text(
-                    text = "months",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    ),
-                    color = Neutral100
-                )
-            }
-
-            // Month indicator dots around the circle
-            val months = listOf(
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec"
-            )
-            val selectedMonth = 6 // July (0-based)
-
-            months.forEachIndexed { index, _ ->
-                val angle = (index * 30f) - 90f // Start from top, 30 degrees per month
-                val isSelected = index == selectedMonth
-                val radiusFromCenter = 75.dp.value // Adjust this to position dots correctly
-
-                Box(
-                    modifier = Modifier
-                        .offset(
-                            x = (radiusFromCenter * kotlin.math.cos(Math.toRadians(angle.toDouble()))).dp,
-                            y = (radiusFromCenter * kotlin.math.sin(Math.toRadians(angle.toDouble()))).dp
+                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+                    modifier = Modifier.height(48.dp)
+                ) {
+                    Text(
+                        text = option,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 16.sp,
+                            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
                         )
-                        .size(if (isSelected) 8.dp else 6.dp)
-                        .background(
-                            if (isSelected) Neutral100 else Neutral40,
-                            CircleShape
-                        )
-                )
+                    )
+                }
             }
         }
+    }
+}
 
-        // Additional gradient overlay elements (smaller decorative circles)
-        Box(
-            modifier = Modifier
-                .offset(x = 60.dp, y = (-20).dp)
-                .size(20.dp)
-                .background(
-                    Color(0xFFFF385C).copy(alpha = 0.15f),
-                    CircleShape
-                )
+@Composable
+fun GoAnytimeSection() {
+    Column {
+        Text(
+            text = "Go anytime",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Medium,
+                fontSize = 20.sp
+            ),
+            color = Neutral100,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        Box(
+        Row(
             modifier = Modifier
-                .offset(x = (-70).dp, y = 30.dp)
-                .size(16.dp)
-                .background(
-                    Color(0xFFFF385C).copy(alpha = 0.1f),
-                    CircleShape
-                )
-        )
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            MonthCard("June", "2023", false, Modifier.weight(1f))
+            MonthCard("July", "2023", true, Modifier.weight(1f))
+            MonthCard("Aug", "2023", false, Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+fun MonthCard(
+    month: String,
+    year: String,
+    isSelected: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = { /* Handle month selection */ },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+            contentColor = Neutral100
+        ),
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(
+            width = if (isSelected) 2.dp else 1.dp,
+            color = if (isSelected) Neutral100 else Neutral40
+        ),
+        contentPadding = PaddingValues(16.dp),
+        modifier = modifier.height(120.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.calendar_icon_1),
+                contentDescription = "Calendar",
+                modifier = Modifier.size(24.dp),
+                tint = if (isSelected) Neutral100 else Neutral70
+            )
+
+            Text(
+                text = month,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = 16.sp,
+                    fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
+                ),
+                color = Neutral100
+            )
+
+            Text(
+                text = year,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontSize = 12.sp
+                ),
+                color = Neutral70
+            )
+        }
     }
 }
 
