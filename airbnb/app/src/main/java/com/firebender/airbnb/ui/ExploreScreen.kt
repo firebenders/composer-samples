@@ -100,7 +100,8 @@ fun ExploreScreen() {
 
         // Navigation Bar (bottom)
         NavigationBar(
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
+            activeTab = "Inbox"
         )
     }
 }
@@ -354,7 +355,7 @@ fun MapButton(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun NavigationBar(modifier: Modifier = Modifier) {
+fun NavigationBar(modifier: Modifier = Modifier, activeTab: String = "Explore") {
     Surface(
         modifier = modifier.fillMaxWidth(),
         color = Neutral10,
@@ -375,11 +376,35 @@ fun NavigationBar(modifier: Modifier = Modifier) {
                     .padding(horizontal = 24.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                NavigationItem("Explore", R.drawable.icon_outline_search_0, isActive = true)
-                NavigationItem("Wishlist", R.drawable.icon_outline_heart_0, hasIndicator = true)
-                NavigationItem("Trips", R.drawable.airbnb, hasIndicator = false)
-                NavigationItem("Inbox", R.drawable.icon_outline_message, hasIndicator = false)
-                NavigationItem("Profile", R.drawable.icon_outline_user, hasIndicator = false)
+                NavigationItem(
+                    "Explore",
+                    R.drawable.icon_outline_search_0,
+                    isActive = activeTab == "Explore"
+                )
+                NavigationItem(
+                    "Wishlist",
+                    R.drawable.icon_outline_heart_0,
+                    hasIndicator = true,
+                    isActive = activeTab == "Wishlist"
+                )
+                NavigationItem(
+                    "Trips",
+                    R.drawable.airbnb,
+                    hasIndicator = false,
+                    isActive = activeTab == "Trips"
+                )
+                NavigationItem(
+                    "Inbox",
+                    R.drawable.icon_outline_message,
+                    hasIndicator = activeTab == "Inbox",
+                    isActive = activeTab == "Inbox"
+                )
+                NavigationItem(
+                    "Profile",
+                    R.drawable.icon_outline_user,
+                    hasIndicator = false,
+                    isActive = activeTab == "Profile"
+                )
             }
         }
     }
