@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.firebender.airbnb.ui.InboxScreen
+import com.firebender.airbnb.ui.ProfileScreen
 import com.firebender.airbnb.ui.theme.AirbnbTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AirbnbTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    InboxScreen()
+                    ProfileScreen()
                 }
             }
         }
@@ -30,6 +30,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainActivityPreview() {
     AirbnbTheme {
-        InboxScreen()
+        ProfileScreen()
     }
 }
