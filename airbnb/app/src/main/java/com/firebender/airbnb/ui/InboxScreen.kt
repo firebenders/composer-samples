@@ -110,52 +110,21 @@ fun InboxScreen() {
                 // Bottom border
                 Divider(
                     color = Neutral20,
-                    thickness = 1.dp,
+                    thickness = 2.dp,
                     modifier = Modifier.offset(y = (-1).dp)
                 )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Chat List
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                // First Chat - Craig (Simple format)
-                ChatItem(
-                    isAirbnb = true,
-                    name = "Craig",
-                    message = "Alright got it we'll make do thanks a lot",
-                    avatarResource = null
-                )
-
-                Divider(color = Neutral40, thickness = 1.dp)
-
-                // Second Chat - Craig with details
-                ChatItemWithDetails(
-                    name = "Craig",
-                    location = "Yonkers",
-                    message = "Airbnb update: Reservation canceled",
-                    status = "Canceled",
-                    date = "Feb 13 - 14, 2023",
-                    avatarResource = R.drawable.chat_avatar_placeholder
-                )
-
-                Divider(color = Neutral40, thickness = 1.dp)
-
-                // Third Chat - Erin
-                ChatItemWithDetails(
-                    name = "Erin",
-                    location = "New York",
-                    message = "New date and time request",
-                    status = "Request pending",
-                    date = null,
-                    avatarResource = R.drawable.chat_avatar_ellipse
-                )
-            }
+            // Empty state message
+            Text(
+                text = "You are all caught up",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal,
+                color = Neutral70,
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
 
             Spacer(modifier = Modifier.height(100.dp))
         }
