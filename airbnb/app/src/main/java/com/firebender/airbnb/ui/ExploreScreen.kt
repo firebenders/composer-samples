@@ -3,6 +3,7 @@ package com.firebender.airbnb.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -14,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -25,6 +27,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.firebender.airbnb.R
 import com.firebender.airbnb.ui.theme.*
 
@@ -46,8 +49,17 @@ data class PropertyCard(
     val priceTotal: String
 )
 
+data class SearchDestination(
+    val id: String,
+    val title: String,
+    val imageRes: Int,
+    val isFlexible: Boolean = false
+)
+
 @Composable
 fun ExploreScreen() {
+    var showSearchModal by remember { mutableStateOf(true) }
+
     val categories = listOf(
         CategoryItem("cabins", "Cabins", R.drawable.cabin_icon, true),
         CategoryItem("rooms", "Rooms", R.drawable.room_icon),
@@ -80,17 +92,19 @@ fun ExploreScreen() {
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
+        // Main content (blurred when modal is shown)
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Neutral10)
+                .blur(if (showSearchModal) 100.dp else 0.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             // Status Bar (simulated)
             Spacer(modifier = Modifier.height(44.dp))
 
             // Search Bar
-            SearchBarSection()
+            SearchBarSection(onSearchClick = { showSearchModal = true })
 
             // Categories
             CategoriesSection(categories)
@@ -102,22 +116,332 @@ fun ExploreScreen() {
         }
 
         // Map Button (floating)
-        MapButton(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .offset(y = (-104).dp)
-        )
+        if (!showSearchModal) {
+            MapButton(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(y = (-104).dp)
+            )
+        }
 
         // Navigation Bar (bottom)
-        NavigationBar(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            activeTab = "Explore"
+        if (!showSearchModal) {
+            NavigationBar(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                activeTab = "Explore"
+            )
+        }
+
+        // Search Modal Overlay
+        if (showSearchModal) {
+            SearchModal(
+                onDismiss = { showSearchModal = false },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(1f)
+            )
+        }
+    }
+}
+
+@Composable
+fun SearchModal(
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val destinations = listOf(
+        SearchDestination("flexible", "I'm flexible", R.drawable.hotel_search_map_preview, true),
+        SearchDestination("us", "United States", R.drawable.search_hotel_map_preview),
+        SearchDestination("japan", "Japan", R.drawable.search_hotel_map_japan)
+    )
+
+    Column(
+        modifier = modifier
+            .background(Color.White.copy(alpha = 0.6f))
+            .fillMaxSize()
+    ) {
+        // Status Bar
+        Spacer(modifier = Modifier.height(44.dp))
+
+        // Top Bar with Close and Tabs
+        SearchTopBar(onClose = onDismiss)
+
+        // Main Search Content Container
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Search Card
+                SearchCard(destinations = destinations)
+
+                // When Field
+                SearchField(
+                    label = "When",
+                    value = "Any week"
+                )
+
+                // who Field
+                SearchField(
+                    label = "Who",
+                    value = "Add guests"
+                )
+            }
+        }
+
+        // Bottom Section with Clear All and Search Button
+        SearchBottomSection()
+    }
+}
+
+@Composable
+fun SearchTopBar(onClose: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(56.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Close Button
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.White, CircleShape)
+                .border(1.dp, Neutral40, CircleShape)
+                .clickable { onClose() }
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.close_icon),
+                contentDescription = "Close",
+                modifier = Modifier.size(24.dp),
+                tint = Neutral100
+            )
+        }
+
+        // Tabs
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            TabItem("Stays", isActive = true)
+            TabItem("Experiences", isActive = false)
+        }
+    }
+}
+
+@Composable
+fun TabItem(text: String, isActive: Boolean) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = if (isActive) FontWeight.Medium else FontWeight.Normal,
+                fontSize = 16.sp
+            ),
+            color = if (isActive) Neutral100 else Neutral70
+        )
+
+        if (isActive) {
+            Box(
+                modifier = Modifier
+                    .width(40.dp)
+                    .height(2.dp)
+                    .background(Neutral100)
+            )
+        }
+    }
+}
+
+@Composable
+fun SearchCard(destinations: List<SearchDestination>) {
+    Card(
+        modifier = Modifier
+            .width(334.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 20.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            // Title
+            Text(
+                text = "Where to?",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 24.sp
+                ),
+                color = Neutral100
+            )
+
+            // Search Field
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Neutral20, RoundedCornerShape(18.dp))
+                    .border(1.dp, Neutral40, RoundedCornerShape(18.dp))
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.search_icon),
+                    contentDescription = "Search",
+                    modifier = Modifier.size(20.dp),
+                    tint = Neutral70
+                )
+                Text(
+                    text = "Search destinations",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Neutral70
+                )
+            }
+
+            // Destination Options Grid
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(horizontal = 0.dp)
+            ) {
+                items(destinations.take(3)) { destination ->
+                    DestinationCard(destination)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DestinationCard(destination: SearchDestination) {
+    Column(
+        modifier = Modifier.width(88.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(88.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .border(
+                    width = if (destination.isFlexible) 2.dp else 0.dp,
+                    color = if (destination.isFlexible) Neutral100 else Color.Transparent,
+                    shape = RoundedCornerShape(12.dp)
+                )
+        ) {
+            Image(
+                painter = painterResource(destination.imageRes),
+                contentDescription = destination.title,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        Text(
+            text = destination.title,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Medium,
+                fontSize = 12.sp
+            ),
+            color = Neutral100
         )
     }
 }
 
 @Composable
-fun SearchBarSection() {
+fun SearchField(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .width(334.dp)
+            .background(Color.White, RoundedCornerShape(18.dp))
+            .border(1.dp, Neutral40, RoundedCornerShape(18.dp))
+            .shadow(8.dp, RoundedCornerShape(18.dp))
+            .padding(24.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp
+            ),
+            color = Neutral100
+        )
+
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Neutral70
+        )
+    }
+}
+
+@Composable
+fun SearchBottomSection() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(24.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Clear all",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
+                textDecoration = TextDecoration.Underline
+            ),
+            color = Neutral100
+        )
+
+        Button(
+            onClick = { },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Primary60
+            ),
+            shape = RoundedCornerShape(24.dp),
+            contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.search_icon),
+                    contentDescription = "Search",
+                    modifier = Modifier.size(16.dp),
+                    tint = Color.White
+                )
+                Text(
+                    text = "Search",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp
+                    ),
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SearchBarSection(onSearchClick: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -134,6 +458,7 @@ fun SearchBarSection() {
                 )
                 .background(Neutral10, RoundedCornerShape(43.dp))
                 .border(0.5.dp, Neutral40, RoundedCornerShape(43.dp))
+                .clickable { onSearchClick() }
                 .padding(12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
