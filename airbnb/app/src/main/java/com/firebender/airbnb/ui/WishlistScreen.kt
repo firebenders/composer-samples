@@ -2,6 +2,7 @@ package com.firebender.airbnb.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,17 +14,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,171 +38,393 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.firebender.airbnb.R
 import com.firebender.airbnb.ui.theme.AirbnbTheme
 import com.firebender.airbnb.ui.theme.Neutral10
 import com.firebender.airbnb.ui.theme.Neutral40
 import com.firebender.airbnb.ui.theme.Neutral70
 import com.firebender.airbnb.ui.theme.Neutral100
+import com.firebender.airbnb.ui.theme.Primary60
 import com.firebender.airbnb.ui.theme.Primary70
 
-data class WishlistItem(
+data class WishlistPropertyCard(
     val title: String,
-    val date: String?,
-    val imageRes: Int,
-    val showDate: Boolean = true
+    val description: String,
+    val bedSize: String,
+    val dates: String,
+    val distance: String,
+    val rating: String,
+    val pricePerNight: String,
+    val totalPrice: String,
+    val imageRes: Int
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WishlistScreen() {
-    val wishlistItems = listOf(
-        WishlistItem(
-            title = "Nice",
-            date = "May 14 - 19, 2023",
-            imageRes = R.drawable.cozy_bedroom_interior_0,
-            showDate = true
+    val properties = listOf(
+        WishlistPropertyCard(
+            title = "Entire home in Putnam Valley Modern luxury in woods 5B 3.5B heated",
+            description = "Villa with private swimming pool",
+            bedSize = "1 Queen Bed",
+            dates = "Jul 2 - 7",
+            distance = "1,669 kilometers",
+            rating = "4.98 (61)",
+            pricePerNight = "$1,700",
+            totalPrice = "$10,156",
+            imageRes = R.drawable.wishlist_card_picture_outdoor_house
         ),
-        WishlistItem(
-            title = "Chill",
-            date = "May 14 - 19, 2023",
-            imageRes = R.drawable.poolside_garden_patio,
-            showDate = false
+        WishlistPropertyCard(
+            title = "Abiansemal, Indonesia",
+            description = "Villa with private swimming pool",
+            bedSize = "1 Queen Bed",
+            dates = "Jul 2 - 7",
+            distance = "1,669 kilometers",
+            rating = "4.87 (71)",
+            pricePerNight = "$1,700",
+            totalPrice = "$10,156",
+            imageRes = R.drawable.wishlist_card_picture_outdoor_house
         )
     )
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            Column {
-                // Status Bar
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(44.dp)
-                        .background(Neutral10)
-                )
-
-                // Top Bar
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Wishlist",
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Neutral100,
-                            lineHeight = 42.sp
-                        )
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Neutral10
-                    ),
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-            }
-        },
-        bottomBar = {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopBarSection()
+            },
+            bottomBar = {
+                BottomNavigationBar()
+            },
+            containerColor = Neutral10
+        ) { paddingValues ->
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Neutral10)
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState())
             ) {
-                // Top border only
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(Neutral40)
-                )
+                // Header section with Nice title and tabs
+                HeaderSection()
 
-                Row(
+                // Property cards
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    verticalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
-                    NavigationItem(
-                        icon = R.drawable.icon_outline_search,
-                        label = "Explore",
-                        isSelected = false,
-                        modifier = Modifier.weight(1f)
-                    )
-                    NavigationItem(
-                        icon = R.drawable.icon_outline_heart,
-                        label = "Wishlist",
-                        isSelected = true,
-                        modifier = Modifier.weight(1f)
-                    )
-                    NavigationItem(
-                        icon = R.drawable.airbnb,
-                        label = "Trips",
-                        isSelected = false,
-                        modifier = Modifier.weight(1f)
-                    )
-                    NavigationItem(
-                        icon = R.drawable.icon_outline_message,
-                        label = "Inbox",
-                        isSelected = false,
-                        showIndicator = true,
-                        modifier = Modifier.weight(1f)
-                    )
-                    NavigationItem(
-                        icon = R.drawable.icon_outline_user,
-                        label = "Profile",
-                        isSelected = false,
-                        modifier = Modifier.weight(1f)
-                    )
+                    properties.forEach { property ->
+                        WishlistPropertyCardItem(property = property)
+                    }
+
+                    // Bottom padding for floating button
+                    Spacer(modifier = Modifier.height(100.dp))
                 }
             }
-        },
-        containerColor = Neutral10
-    ) { paddingValues ->
-        Column(
+        }
+
+        // Floating Map Button
+        FloatingMapButton(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 100.dp)
+                .zIndex(1f)
+        )
+    }
+}
+
+@Composable
+fun TopBarSection() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Neutral10)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Back button
+        IconButton(
+            onClick = { },
+            modifier = Modifier
+                .size(40.dp)
+                .background(Neutral10, RoundedCornerShape(24.dp))
         ) {
-            wishlistItems.forEach { item ->
-                WishlistStackItem(item = item)
+            Icon(
+                painter = painterResource(id = R.drawable.icon_outline_arrow_left),
+                contentDescription = "Back",
+                modifier = Modifier.size(24.dp),
+                tint = Neutral100
+            )
+        }
+
+        // Right side buttons
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            IconButton(
+                onClick = { },
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(Neutral10, RoundedCornerShape(24.dp))
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_outline_download),
+                    contentDescription = "Share",
+                    modifier = Modifier.size(24.dp),
+                    tint = Neutral100
+                )
+            }
+
+            IconButton(
+                onClick = { },
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(Neutral10, RoundedCornerShape(24.dp))
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_outline_menu),
+                    contentDescription = "Menu",
+                    modifier = Modifier.size(24.dp),
+                    tint = Neutral100
+                )
             }
         }
     }
 }
 
 @Composable
-fun WishlistStackItem(item: WishlistItem) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-        verticalAlignment = Alignment.CenterVertically
+fun HeaderSection() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Picture
-        Image(
-            painter = painterResource(id = item.imageRes),
-            contentDescription = null,
-            modifier = Modifier
-                .size(64.dp)
-                .clip(RoundedCornerShape(12.dp)),
-            contentScale = ContentScale.Crop
+        // Nice title
+        Text(
+            text = "Nice",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Medium,
+            color = Neutral100,
+            lineHeight = 32.sp
         )
 
-        // Text Content
+        // Tabs
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Active tab
+            OutlinedButton(
+                onClick = { },
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Neutral100
+                ),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Neutral100),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier.height(32.dp)
+            ) {
+                Text(
+                    text = "May 14 - 19",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
+            // Inactive tab
+            OutlinedButton(
+                onClick = { },
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Neutral70
+                ),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Neutral40),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier.height(32.dp)
+            ) {
+                Text(
+                    text = "Guests",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun WishlistPropertyCardItem(property: WishlistPropertyCard) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        // Property Image
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(280.dp)
+                .clip(RoundedCornerShape(12.dp))
+        ) {
+            Image(
+                painter = painterResource(id = property.imageRes),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            // SUPERHOST badge
+            Box(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .background(
+                        Color.White.copy(alpha = 0.9f),
+                        RoundedCornerShape(4.dp)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                    .align(Alignment.TopStart)
+            ) {
+                Text(
+                    text = "SUPERHOST",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Neutral100
+                )
+            }
+
+            // Heart icon
+            IconButton(
+                onClick = { },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(12.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_outline_heart_1),
+                    contentDescription = "Favorite",
+                    modifier = Modifier.size(24.dp),
+                    tint = Primary60
+                )
+            }
+
+            // Page indicators (dots)
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                repeat(5) { index ->
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .background(
+                                if (index == 0) Neutral10 else Neutral10.copy(alpha = 0.5f),
+                                RoundedCornerShape(3.dp)
+                            )
+                    )
+                }
+            }
+        }
+
+        // Property Details
         Column(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
+            // Rating
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_filled_star_0),
+                    contentDescription = null,
+                    modifier = Modifier.size(12.dp),
+                    tint = Primary60
+                )
+                Text(
+                    text = property.rating,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Neutral100
+                )
+            }
+
+            // Title and description
             Text(
-                text = item.title,
+                text = property.title,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
                 color = Neutral100,
                 lineHeight = 22.sp
             )
 
-            if (item.showDate && item.date != null) {
+            Text(
+                text = property.description,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                color = Neutral70,
+                lineHeight = 18.sp
+            )
+
+            // Bed size
+            Text(
+                text = property.bedSize,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                color = Neutral70,
+                lineHeight = 18.sp
+            )
+
+            // Date
+            Text(
+                text = property.dates,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                color = Neutral70,
+                lineHeight = 18.sp
+            )
+
+            // Distance
+            Text(
+                text = property.distance,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                color = Neutral70,
+                lineHeight = 18.sp
+            )
+
+            // Price
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = property.pricePerNight,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Neutral100
+                    )
+                    Text(
+                        text = "night •",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Neutral100
+                    )
+                    Text(
+                        text = "${property.totalPrice} total",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Neutral100
+                    )
+                }
                 Text(
-                    text = item.date,
+                    text = "${property.totalPrice} total",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = Neutral70,
@@ -211,15 +436,94 @@ fun WishlistStackItem(item: WishlistItem) {
 }
 
 @Composable
+fun FloatingMapButton(modifier: Modifier = Modifier) {
+    Button(
+        onClick = { },
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Neutral100
+        ),
+        shape = RoundedCornerShape(40.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "Map",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = Neutral10
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.icon_filled_maps),
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = Neutral10
+            )
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationBar() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Neutral10)
+    ) {
+        // Top border
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Neutral40)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            NavigationItem(
+                icon = R.drawable.icon_outline_search_1,
+                label = "Explore",
+                isSelected = false
+            )
+            NavigationItem(
+                icon = R.drawable.icon_outline_heart_3,
+                label = "Wishlist",
+                isSelected = true
+            )
+            NavigationItem(
+                icon = R.drawable.airbnb_logo,
+                label = "Trips",
+                isSelected = false
+            )
+            NavigationItem(
+                icon = R.drawable.icon_outline_message,
+                label = "Inbox",
+                isSelected = false,
+                showIndicator = true
+            )
+            NavigationItem(
+                icon = R.drawable.icon_outline_user,
+                label = "Profile",
+                isSelected = false
+            )
+        }
+    }
+}
+
+@Composable
 fun NavigationItem(
     icon: Int,
     label: String,
     isSelected: Boolean,
-    modifier: Modifier = Modifier,
     showIndicator: Boolean = false
 ) {
     Column(
-        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
@@ -235,8 +539,7 @@ fun NavigationItem(
                 Box(
                     modifier = Modifier
                         .size(8.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(Primary70)
+                        .background(Primary70, RoundedCornerShape(4.dp))
                         .align(Alignment.TopEnd)
                 )
             }
