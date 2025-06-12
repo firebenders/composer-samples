@@ -14,6 +14,16 @@ val ButtonSecondaryBackground = Color(0xFFFFFDFE)
 val ButtonSecondaryBorder = Color(0xFFE5E5E7)
 val ButtonSecondaryShadow = Color(0xFFE5E4E5)
 
+// New colors for language selection screen
+val BackArrowColor = Color(0xFFB0ADB1)
+val ProgressBackgroundColor = Color(0xFFE7E5E7)
+val ProgressActiveColor = Color(0xFF5CCF04)
+val TextPrimary = Color(0xFF4B4B4B)
+val SeparatorColor = Color(0xFFE7E5E7)
+val SelectedLanguageBackground = Color(0xFFD2EFFD)
+val SelectedLanguageBorder = Color(0xFF77D0FA)
+val DefaultLanguageBorder = Color(0xFFEBEBEB)
+
 // Legacy Material Colors (kept for compatibility)
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
