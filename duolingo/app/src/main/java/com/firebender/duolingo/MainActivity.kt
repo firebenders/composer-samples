@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DuolingoTheme {
-                LessonScreen()
+                HomeScreen()
             }
         }
     }
