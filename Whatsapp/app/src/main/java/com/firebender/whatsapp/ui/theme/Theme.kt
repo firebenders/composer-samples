@@ -12,32 +12,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Blue007AFF,
+    secondary = Gray8E8E93,
+    tertiary = GrayF6F6F6,
+    background = GrayEFEFF4,
+    surface = White
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = Blue007AFF,
+    secondary = Gray8E8E93,
+    tertiary = GrayF6F6F6,
+    background = GrayEFEFF4,
+    surface = White,
+    onPrimary = White,
+    onSecondary = Black000000,
+    onTertiary = Black000000,
+    onBackground = Black000000,
+    onSurface = Black000000
 )
 
 @Composable
 fun WhatsappTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
