@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.firebender.whatsapp.ui.ChatScreen
+import com.firebender.whatsapp.ui.ChatDetailScreen
 import com.firebender.whatsapp.ui.theme.WhatsappTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             WhatsappTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    ChatScreen()
+                    ChatDetailScreen()
                 }
             }
         }
@@ -30,6 +30,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     WhatsappTheme {
-        ChatScreen()
+        ChatDetailScreen()
     }
 }
